@@ -81,7 +81,7 @@ export class GameHandler implements IGameHandler {
   }
 
   async stop(game: Game): Promise<Game> {
-    return Promise.resolve(undefined);
+    return game;
   }
 
   async list(): Promise<Game[]> {

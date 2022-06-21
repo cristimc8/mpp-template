@@ -24,6 +24,12 @@ export class SocketServer {
     io.on('connection', async (socket) => {
       Logger.info(`Connected client -> ${socket.id}`);
 
+      // force to get leaderboard
+      this.io.emit(
+          'leaderboard',
+          await this.gameHandler.list()
+      )
+
       socket.on('disconnect', () => {
         Logger.info(`Disconnected client -> ${socket.id}`);
         delete this.gameDetails[socket.id];
@@ -67,5 +73,9 @@ export class SocketServer {
         'end',
         this.gameHandler.stop(this.gameDetails[socket.id])
     );
+    this.io.emit(
+        'leaderboard',
+        this.gameHandler.list()
+    )
   }
 }
