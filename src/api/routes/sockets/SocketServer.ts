@@ -45,7 +45,7 @@ export class SocketServer {
       socket.on('move', async () => {
         const move = await this.gameHandler.move(this.gameDetails[socket.id]);
         io.to(socket.id).emit('move', move);
-        this.playerMakeAStep(socket);
+        return this.playerMakeAStep(socket);
       });
     });
   }
@@ -63,11 +63,11 @@ export class SocketServer {
 
   private playerMakeAStep(socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
     if (this.gameEnded(socket.id)) {
-      this.playerStop(socket);
+      return this.playerStop(socket);
     }
   }
 
-  private playerStop(socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
+  private async playerStop(socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
     // Tell user he's done
     this.io.to(socket.id).emit(
         'end',
@@ -75,7 +75,7 @@ export class SocketServer {
     );
     this.io.emit(
         'leaderboard',
-        this.gameHandler.list()
+        await this.gameHandler.list()
     )
   }
 }
